@@ -1,0 +1,105 @@
+<!-- <!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles.css">
+    <title>Cửa Hàng Sách</title>
+</head>
+<body>
+    <header> 
+        <nav>
+            <ul>
+                <li><span class="icon">📚</span><a href="#">Trang Chủ</a></li>
+                <li><span class="icon">🎉</span><a href="#">Giới Thiệu</a></li>
+                <li><span class="icon">🛒</span><a href="#">Dịch Vụ</a></li>
+                <li><span class="icon">📅</span><a href="#">Tin Tức</a></li>
+                <li><span class="icon">📚</span><a href="#">Liên Hệ</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section>
+            Slide Ảnh
+            <div class="slider">
+                <div class="slides">
+                    <div class="slide"><img src="https://theme.hstatic.net/200000343865/1001052087/14/ms_banner_img1.jpg?v=1486" alt="Slide 1"></div>
+                    <div class="slide"><img src="https://theme.hstatic.net/200000343865/1001052087/14/ms_banner_img5.jpg?v=1486" alt="Slide 2"></div>
+                    <div class="slide"><img src="https://theme.hstatic.net/200000343865/1001052087/14/ms_banner_img3.jpg?v=1486" alt="Slide 3"></div>
+                </div>
+                <button class="nav-button prev" onclick="showPrevSlide()">❮</button>
+                <button class="nav-button next" onclick="showNextSlide()">❯</button>
+            </div>
+             <div class="sachnoibat"><h2>Sách Nổi Bật</h2> </div>
+            <div id="books">
+                <div class="book">
+                    <tr th:each="book : ${books}">
+                    <img th:src="${book.CoverImage}" alt="Sách" />
+                    <h3 th:text="${book.Title}"></h3>
+                    <p th:text="'Tác Giả : '+${book.Author}"></p>
+                    <p th:text="'Giá : '+${book.Price} +' VNĐ'"></p>
+                    </tr>
+                </div>
+            </div>
+             <div class="sachhot"><h2>Sách Hot</h2> </div>
+             <div id="books">
+                <div class="book">
+                    <img src="https://product.hstatic.net/200000343865/product/103_8b03a2f691474a01bea7c3b7b7010519_large.jpg" alt="Sách 1">
+                    <h3>Thám tử lừng danh Conan</h3>
+                    <p>Tác giả : Gosho Aoyama</p>
+                    <p>Giá: 22.500 VNĐ</p>
+                </div>
+                <div class="book">
+                    <img src="https://product.hstatic.net/200000343865/product/an-tao-101-dieu-can-biet-ve-tuong-lai_bff86af1fe2f40f9bde4dad06b29721f_67d4228fb4ad4e038a7c00c42493dfc7_large.jpg" alt="Sách 2">
+                    <h3>AI trí tuệ nhân tạo - 101 điều cần...</h3>
+                    <p>Tác giả: Easse Rouhiainen</p>
+                    <p>Giá: 100.800 VNĐ</p>
+                </div>
+                <div class="book">
+                    <img src="https://product.hstatic.net/200000343865/product/14_248125031fc641f1b8567c313fdaa3c2_large.jpg" alt="Sách 3">
+                    <h3>Tý Quậy</h3>
+                    <p>Tác giả: Đào Hải</p>
+                    <p>Giá: 36.000 VNĐ</p>
+                </div>
+                <div class="book">
+                    <img src="https://product.hstatic.net/200000343865/product/3_07066b8ee28c4e5b8f095011a8cd083f_large.jpg" alt="Sách 4">
+                    <h3>Doraemon #3</h3>
+                    <p>Tác giả: </p>
+                    <p>Giá: 225.000 VNĐ</p>
+                </div>
+            </div>
+             <div class="sachdocnhieu"><h2>Sách Đọc Nhiều</h2> </div>
+            <div id="books">
+                <div class="book">
+                    <img src="https://product.hstatic.net/200000343865/product/103_8b03a2f691474a01bea7c3b7b7010519_large.jpg" alt="Sách 1">
+                    <h3>Thám tử lừng danh Conan</h3>
+                    <p>Tác giả : Gosho Aoyama</p>
+                    <p>Giá: 22.500 VNĐ</p>
+                </div>
+                <div class="book">
+                    <img src="https://product.hstatic.net/200000343865/product/an-tao-101-dieu-can-biet-ve-tuong-lai_bff86af1fe2f40f9bde4dad06b29721f_67d4228fb4ad4e038a7c00c42493dfc7_large.jpg" alt="Sách 2">
+                    <h3>AI trí tuệ nhân tạo - 101 điều cần...</h3>
+                    <p>Tác giả: Easse Rouhiainen</p>
+                    <p>Giá: 100.800 VNĐ</p>
+                </div>
+                <div class="book">
+                    <img src="https://product.hstatic.net/200000343865/product/sai-canh-nhu-nhung-chu-chim_bia_83526f45064448288601c1e736393cfe_large.jpg" alt="Sách 3">
+                    <h3>Sải cánh như những chú chim</h3>
+                    <p>Tác giả: Alison Davies</p>
+                    <p>Giá: 150.000 VNĐ</p>
+                </div>
+                <div class="book">
+                    <img src="https://product.hstatic.net/200000343865/product/gau-me-cuu-con_bia_9bed66b94960463498fa0eaaa68aef5e_large.jpg" alt="Sách 4">
+                    <h3>Gấu mẹ cứu con</h3>
+                    <p>Tác giả: Adèle Tariel, Jérôme Peyrat</p>
+                    <p>Giá: 200.000 VNĐ</p>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 Cửa Hàng Sách. Tất cả quyền được bảo lưu.</p>
+    </footer>
+    <script th:src="@{/script.js}"></script>
+</body>
+</html> -->
