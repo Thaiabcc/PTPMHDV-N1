@@ -36,8 +36,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.NhaSach.Sach;
-
 import jakarta.validation.Valid;
 
 import org.springframework.stereotype.Controller;
@@ -139,7 +137,57 @@ public class Sach1controller {
     	return "redirect:/books";
     }
     
-   }
+
+    
+    @GetMapping("/high-stock")
+    public String showBooks(
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "30") int size,
+            Model model
+        ) {
+            // Lấy danh sách sách tồn kho > 700 với phân trang
+            Page<Sach1> booksPage = sach1service.getBooksWithSoLuongConGreaterThan700(page, 30);
+
+            // Thêm dữ liệu vào model để hiển thị trong view
+            model.addAttribute("books", booksPage.getContent());  // Danh sách sách trong trang hiện tại
+            model.addAttribute("currentPage", page);              // Trang hiện tại
+            model.addAttribute("totalPages", booksPage.getTotalPages()); // Tổng số trang
+
+            return "books/high-stock";  
+        }
+    
+
+    @GetMapping("/best-seller")
+    public String showBookBest(
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "25") int size,
+            Model model
+        ) {
+            // Lấy danh sách sách tồn kho > 700 với phân trang
+            Page<Sach1> booksPage = sach1service.getBooksWithSoLuongConLessThan300(page, 25);
+
+            // Thêm dữ liệu vào model để hiển thị trong view
+            model.addAttribute("books", booksPage.getContent());  // Danh sách sách trong trang hiện tại
+            model.addAttribute("currentPage", page);              // Trang hiện tại
+            model.addAttribute("totalPages", booksPage.getTotalPages()); // Tổng số trang
+
+            return "books/best-seller";  
+        }
+    @GetMapping("/flash-sales")
+    public String showBookFlashSales(
+    		@RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "25") int size,
+            Model model
+    		) {
+    	Page<Sach1> booksPage = sach1service.getBooksWithSoLuongConGreaterThan700(page, 25);
+
+        // Thêm dữ liệu vào model để hiển thị trong view
+        model.addAttribute("books", booksPage.getContent());  // Danh sách sách trong trang hiện tại
+        model.addAttribute("currentPage", page);              // Trang hiện tại
+        model.addAttribute("totalPages", booksPage.getTotalPages());
+    	return "books/flash-sales"; 
+    }
+ }
 
 
 

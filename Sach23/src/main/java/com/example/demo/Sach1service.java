@@ -14,8 +14,10 @@
 
 package com.example.demo;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Optional;import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,7 +25,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.NhaSach.Sach;
+
 
 @Service
 public class Sach1service {
@@ -50,7 +52,6 @@ public class Sach1service {
 
         return sach1repository.save(sach1);  
     }
-    
     
     //Phân trang
     public Page<Sach1> getBooksByPage(int page, int size) {
@@ -86,6 +87,18 @@ public class Sach1service {
     //Delete sach
     public void deleteBook(String MaSach) {
     	sach1repository.deleteById(MaSach);
+    }
+    // Thong ke sach ton kho
+ 
+    public Page<Sach1> getBooksWithSoLuongConGreaterThan700(int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size); // -1 vì Spring bắt đầu từ trang 0
+        return sach1repository.findBySoLuongConGreaterThan(700, pageable);
+    }
+    
+    // Thong ke sach ban chay
+    public Page<Sach1> getBooksWithSoLuongConLessThan300(int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size); // 
+        return sach1repository.findBySoLuongConLessThan(300, pageable);
     }
 }
 
