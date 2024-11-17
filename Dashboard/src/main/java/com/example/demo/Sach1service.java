@@ -25,8 +25,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.NhaSach.Sach;
-
 @Service
 public class Sach1service {
 
@@ -121,6 +119,16 @@ public class Sach1service {
             }))
             .limit(limit)
             .collect(Collectors.toList());
+    }
+    
+    // phan trang api sach ban chay
+    public Page<Sach1> getSachBanChays(int page, int size) {
+        return sach1repository.findBySoLuongConLessThan(300,PageRequest.of(page, size));
+    }
+    
+    // phan trang api sach ton kho
+    public Page<Sach1> getSachTonKhos(int page, int size) {
+        return sach1repository.findBySoLuongConGreaterThan(700,PageRequest.of(page, size));
     }
    }
 

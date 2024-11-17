@@ -125,12 +125,13 @@ public class Sach1 {
 		if(this.soLuongCon>700 & this.soLuongCon<800) {
 			sales="10%";
 		}
-		else if(this.soLuongCon<900) {
+		else if(this.soLuongCon<900 & this.soLuongCon>=800 ) {
 			sales="20%";
 		}
-		else if(this.soLuongCon<=1000) {
+		else if(this.soLuongCon<=1000 & this.soLuongCon>=900) {
 			sales="30%";
 		}
+		else sales="0%";
 		return sales;
 	}
 	public float getGiaSales() {
@@ -140,12 +141,13 @@ public class Sach1 {
 		if(this.soLuongCon>700 & this.soLuongCon<800) {
 			salesCost = price2 * 90 / 100;
 		}
-		else if(this.soLuongCon<900) {
+		else if(this.soLuongCon<900 & this.soLuongCon>=800) {
 			salesCost = price2 * 80 / 100;
 		}
-		else if(this.soLuongCon<=1000) {
+		else if(this.soLuongCon<=1000 & this.soLuongCon>=900) {
 			salesCost = price2 * 70 / 100;
 		}
+		else salesCost=price2;
 		return salesCost;
 	}
 }
