@@ -36,8 +36,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.NhaSach.Sach;
-
 import jakarta.validation.Valid;
 
 import org.springframework.stereotype.Controller;
@@ -119,17 +117,6 @@ public class Sach1controller {
             })
             .orElse("redirect:/books");
     }
-
-    @PostMapping("/edit")
-    public String editBook(@Valid @ModelAttribute("sach1dto") Sach1DTO sach1dto,
-                           BindingResult result, Model model) {
-        if (result.hasErrors()) {
-            return "books/edit";
-        }
-        sach1service.updateBook(sach1dto);
-        return "redirect:/books";
-    }
-
     private Sach1DTO convertToDTO(Sach1 sach) {
         Sach1DTO sach1dto = new Sach1DTO();
         sach1dto.setMaSach(sach.getMaSach());
@@ -144,7 +131,16 @@ public class Sach1controller {
         sach1dto.setMaDM(sach.getMaDM());
         return sach1dto;
     }
-
+    
+    @PostMapping("/edit")
+    public String editBook(@Valid @ModelAttribute("sach1dto") Sach1DTO sach1dto,
+                           BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            return "books/edit";
+        }
+        sach1service.updateBook(sach1dto);
+        return "redirect:/books";
+    }
     
     @GetMapping("/delete")
     public String deleteBook(@RequestParam String MaSach) {
@@ -159,7 +155,59 @@ public class Sach1controller {
         System.out.println("Top selling books in model: " + topSellingBooks); // In ra model
         return "books/home"; // Tên tệp HTML
     }
-   }
+    
+    @GetMapping("high-stock")
+    public String showBookTonKho(
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "30") int size,
+            Model model
+        ) {
+            // Lấy danh sách sách tồn kho > 700 với phân trang
+            Page<Sach1> booksPage = sach1service.getBooksWithSoLuongConGreaterThan700(page, 30);
+
+            // Thêm dữ liệu vào model để hiển thị trong view
+            model.addAttribute("books", booksPage.getContent());  // Danh sách sách trong trang hiện tại
+            model.addAttribute("currentPage", page);              // Trang hiện tại
+            model.addAttribute("totalPages", booksPage.getTotalPages()); // Tổng số trang
+
+            return "books/high-stock";  
+        }
+    @GetMapping("thongke")
+    public String showThongKe() {
+    	return "books/thongke";
+    }
+
+    @GetMapping("best-seller")
+    public String showBookBest(
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "25") int size,
+            Model model
+        ) {
+            // Lấy danh sách sách tồn kho < 300 với phân trang
+            Page<Sach1> booksPage = sach1service.getBooksWithSoLuongConLessThan300(page, 25);
+
+            // Thêm dữ liệu vào model để hiển thị trong view
+            model.addAttribute("books", booksPage.getContent());  // Danh sách sách trong trang hiện tại
+            model.addAttribute("currentPage", page);              // Trang hiện tại
+            model.addAttribute("totalPages", booksPage.getTotalPages()); // Tổng số trang
+
+            return "books/best-seller";  
+        }
+    @GetMapping("/flash-sales")
+    public String showBookFlashSales(
+    		@RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "25") int size,
+            Model model
+    		) {
+    	Page<Sach1> booksPage = sach1service.getBooksWithSoLuongConGreaterThan700(page, 25);
+
+        // Thêm dữ liệu vào model để hiển thị trong view
+        model.addAttribute("books", booksPage.getContent());  // Danh sách sách trong trang hiện tại
+        model.addAttribute("currentPage", page);              // Trang hiện tại
+        model.addAttribute("totalPages", booksPage.getTotalPages());
+    	return "books/flash-sales"; 
+    }
+ }
 
 
 

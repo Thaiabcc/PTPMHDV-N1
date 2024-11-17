@@ -70,7 +70,8 @@ public class Sach1service {
     public Optional<Sach1> findById(String MaSach) {
         return sach1repository.findById(MaSach);
     }
-
+    
+    
     public void updateBook(Sach1DTO sach1dto) {
         Optional<Sach1> sachOpt = sach1repository.findById(sach1dto.getMaSach());
         if (sachOpt.isPresent()) {
@@ -91,6 +92,20 @@ public class Sach1service {
     public void deleteBook(String MaSach) {
     	sach1repository.deleteById(MaSach);
     }
+    
+ // Thong ke sach ton kho
+    
+    public Page<Sach1> getBooksWithSoLuongConGreaterThan700(int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size); // -1 vì Spring bắt đầu từ trang 0
+        return sach1repository.findBySoLuongConGreaterThan(700, pageable);
+    }
+    
+    // Thong ke sach ban chay
+    public Page<Sach1> getBooksWithSoLuongConLessThan300(int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size); // 
+        return sach1repository.findBySoLuongConLessThan(300, pageable);
+    }
+    
     //Xep hang
     public List<Sach1> getTopSellingBooks(int limit) {
         List<Sach1> allBooks = sach1repository.findAll();
@@ -99,7 +114,7 @@ public class Sach1service {
         return allBooks.stream()
             .sorted(Comparator.comparingInt(book -> {
                 try {
-                    return Integer.parseInt(book.getSoLuongCon());
+                    return book.getSoLuongCon();
                 } catch (NumberFormatException e) {
                     return Integer.MAX_VALUE; // Nếu không thể chuyển đổi, cho nó vào cuối danh sách
                 }
