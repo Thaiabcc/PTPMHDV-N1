@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Quản lý sách</title>
+	</head>
+	<body>
+		<div class="container">
+			<h1 class="text-center my-4">Welcome to our website</h1>
+			<a class="btn btn-primary" href="/products">Products</a>
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Mã sách</th>
+						<th>Tên sách</th>
+						<th>Ảnh</th>
+						<th>Giá gốc</th>
+						<th>Giá khuyến mãi</th>
+						<th>Tác giả</th>
+						<th>Đối tượng</th>
+						<th>Số trang</th>
+						<th>Số lượng còn</th>
+						<th>Mã danh muc</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="book : ${dsSach}">
+						<td th:text="${book.maSach}"></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</body>
+</html>
