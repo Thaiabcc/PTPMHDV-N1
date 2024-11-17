@@ -4,10 +4,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-
-
 @Entity
-@Table(name = "SACH")
+@Table(name = "newsach")
 public class Sach1 {
 	@Id
 	@Column(name="MaSach")
@@ -24,28 +22,26 @@ public class Sach1 {
 	private String TenTG;
 	@Column(name="TenDoiTuong")
 	private String TenDoiTuong;
-	@Column(name="SoTrang")   
+	@Column(name="SoTrang")
 	private String SoTrang;
 	@Column(name="SoLuongCon")
 	private int soLuongCon;
 	@Column(name="MaDM")
 	private String MaDM;
 	public Sach1(){}
-	
-	public Sach1(String maSach, String tenSach, String linkAnh, String giaGoc, String giaKM, String tenTG,
-			String tenDoiTuong, String soTrang, int soLuongCon, String maDM) {
-		MaSach = maSach;
-		this.tenSach = tenSach;
-		LinkAnh = linkAnh;
-		GiaGoc = giaGoc;
-		GiaKM = giaKM;
-		TenTG = tenTG;
-		TenDoiTuong = tenDoiTuong;
-		SoTrang = soTrang;
-		this.soLuongCon = soLuongCon;
-		MaDM = maDM;
+	public Sach1(String MaSach, String tenSach, String LinkAnh,String GiaGoc, String GiaKM, String TenTG,
+			String TenDoiTuong, String SoTrang, int SoLuongCon, String MaDM) {
+		this.MaSach=MaSach;
+		this.tenSach=tenSach;
+		this.LinkAnh=LinkAnh;
+		this.GiaGoc=GiaGoc;
+		this.GiaKM=GiaKM;
+		this.TenTG=TenTG;
+		this.TenDoiTuong=TenDoiTuong;
+		this.SoTrang=SoTrang;
+		this.soLuongCon=SoLuongCon;
+		this.MaDM=MaDM;
 	}
-
 	public String getMaSach() {
 		return MaSach;
 	}
@@ -96,50 +92,17 @@ public class Sach1 {
 	public void setSoTrang(String soTrang) {
 		SoTrang = soTrang;
 	}
-
 	public int getSoLuongCon() {
-		return this.soLuongCon;
+		return soLuongCon;
 	}
-
 	public void setSoLuongCon(int soLuongCon) {
 		this.soLuongCon = soLuongCon;
 	}
-
 	public String getMaDM() {
 		return MaDM;
 	}
 	public void setMaDM(String maDM) {
 		MaDM = maDM;
 	}
-	public int getSoLuongBan() {
-		return (1000 - this.soLuongCon);
-	}
-	public String getGiamGia() {
-		String sales = "";
-		if(this.soLuongCon>700 & this.soLuongCon<800) {
-			sales="10%";
-		}
-		else if(this.soLuongCon<900) {
-			sales="20%";
-		}
-		else if(this.soLuongCon<=1000) {
-			sales="30%";
-		}
-		return sales;
-	}
-	public float getGiaSales() {
-		float salesCost = 0;
-		String price = GiaKM.substring(0, GiaKM.length()-1).replace(",", "");
-        float price2 = Float.parseFloat(price);
-		if(this.soLuongCon>700 & this.soLuongCon<800) {
-			salesCost = price2 * 90 / 100;
-		}
-		else if(this.soLuongCon<900) {
-			salesCost = price2 * 80 / 100;
-		}
-		else if(this.soLuongCon<=1000) {
-			salesCost = price2 * 70 / 100;
-		}
-		return salesCost;
-	}
+	
 }

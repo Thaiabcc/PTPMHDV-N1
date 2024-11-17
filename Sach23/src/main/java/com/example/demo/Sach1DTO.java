@@ -26,8 +26,8 @@ public class Sach1DTO {
 	@Pattern(regexp = "\\d+", message = "Nhập số nguyên")
 	private String SoTrang;
 	
-	@Pattern(regexp = "\\d+", message = "Nhập số nguyên")
- 	private int SoLuongCon;
+	@NotNull(message = "Nhập số nguyên")
+ 	private int soLuongCon;
 	
 	@NotEmpty(message="Nhập Link Ảnh")
 	private String LinkAnh;
@@ -92,11 +92,12 @@ public class Sach1DTO {
 	public void setSoTrang(String soTrang) {
 		SoTrang = soTrang;
 	}
+	
 	public int getSoLuongCon() {
-		return SoLuongCon;
+		return soLuongCon;
 	}
 	public void setSoLuongCon(int soLuongCon) {
-		SoLuongCon = soLuongCon;
+		soLuongCon = soLuongCon;
 	}
 	public String getLinkAnh() {
 		return LinkAnh;

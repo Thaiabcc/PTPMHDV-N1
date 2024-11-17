@@ -1,37 +1,31 @@
 @charset "UTF-8";
 .pagination {
+    display: flex;
+    justify-content: center;
     list-style: none;
     padding: 0;
-    margin: 0;
-    display: flex;
-    gap: 10px; /* Khoảng cách giữa các phần tử */
 }
 
 .pagination li {
-    display: inline-block;
+    margin: 0 5px;
 }
 
 .pagination a {
     text-decoration: none;
-    padding: 5px 10px;
-    background-color: #f0f0f0;
-    border-radius: 5px;
+    padding: 8px 12px;
+    border: 1px solid #007bff;
     color: #007bff;
-    font-size: 14px;
+    border-radius: 4px;
 }
 
-.pagination a:hover {
+.pagination a.active {
     background-color: #007bff;
     color: white;
 }
 
 .pagination span {
-    padding: 5px 10px;
-    background-color: #f0f0f0;
-    border-radius: 5px;
+    padding: 8px 12px;
 }
-
-
 
 /* Tùy chỉnh cho bảng */
 table {
