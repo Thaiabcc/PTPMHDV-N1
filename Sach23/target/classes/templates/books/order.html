@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Đơn hàng</title>
+    <style>
+       .btn-primary {
+        padding: 8px 20px;
+        font-size: 16px;
+        font-weight: bold;
+        text-align: center;
+        display: inline-block;
+        border: 2px solid #007bff; /* Viền màu xanh biển */
+        color: white; /* Màu chữ trắng */
+        background-color: #007bff; /* Màu nền xanh biển */
+        border-radius: 6px; /* Góc bo tròn */
+        transition: all 0.3s ease; /* Hiệu ứng chuyển đổi mượt mà */
+        text-decoration: none; /* Loại bỏ gạch chân */
+    }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .table-responsive-sm {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #4CAF50; /* Màu xanh lá */
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1; /* Màu nền khi di chuột */
+        }
+
+        /* Nổi bật trạng thái */
+        .status {
+            display: flex;
+            justify-content: center; /* Căn giữa theo chiều ngang */
+            align-items: center; /* Căn giữa theo chiều dọc */
+            height: 100%; /* Chiều cao ô */
+            padding: 5px;
+            border-radius: 4px;
+            white-space: nowrap; /* Không cho phép xuống dòng */
+        }
+
+        .status-processing {
+            background-color: #ffeb3b; /* Vàng */
+            font-weight: bold;
+        }
+        .status-delivered {
+            background-color: #4caf50; /* Xanh lá */
+            color: white;
+            font-weight: bold;
+        }
+        .status-cancelled {
+            background-color: #f44336; /* Đỏ */
+            color: white;
+            font-weight: bold;
+        }
+        .status-delivering {
+            background-color: #2196f3; /* Xanh dương */
+            color: white;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            th, td {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Đơn hàng của khách</h1>
+    <a class="btn btn-primary" href="/books/home">Quay Lại Trang chủ</a>
+    <div class="table-responsive-sm">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Ngày Đặt Hàng</th>
+                    <th>Trạng Thái</th>
+                    <th>Tên Khách Hàng</th>
+                    <th>Địa Chỉ Giao Hàng</th>
+                    <th>Số Điện Thoại</th>
+                    <th>Email</th>
+                    <th>Phương Thức Thanh Toán</th>
+                    <th>Tổng Giá Trị Đơn Hàng</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="donHang : ${donHangs}">
+                    <td th:text="${donHang.idDonHang}"></td>
+                    <td th:text="${donHang.ngayDatHang}"></td>
+                    <td>
+                        <div class="status" th:text="${donHang.trangThaiDonHang}"
+                             th:class="${donHang.trangThaiDonHang == 'Đang xử lý' ? 'status status-processing' : 
+                                         donHang.trangThaiDonHang == 'Đã giao' ? 'status status-delivered' : 
+                                         donHang.trangThaiDonHang == 'Hủy' ? 'status status-cancelled' : 
+                                         donHang.trangThaiDonHang == 'Đang giao' ? 'status status-delivering' : ''}">
+                        </div>
+                    </td>
+                    <td th:text="${donHang.tenKhachHang}"></td>
+                    <td th:text="${donHang.diaChiGiaoHang}"></td>
+                    <td th:text="${donHang.soDienThoai}"></td>
+                    <td th:text="${donHang.email}"></td>
+                    <td th:text="${donHang.phuongThucThanhToan}"></td>
+                    <td th:text="${donHang.tongGiaTriDonHang}"></td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(donHangs)}">
+                    <td colspan="9" style="text-align: center;">Không có dữ liệu</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

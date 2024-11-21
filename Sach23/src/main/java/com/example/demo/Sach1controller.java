@@ -36,6 +36,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.NhaSach.Sach;
+
 import jakarta.validation.Valid;
 
 import org.springframework.stereotype.Controller;
@@ -52,26 +54,49 @@ public class Sach1controller {
     @Autowired
     private Sach1service sach1service;
     
+    @GetMapping("/home")
+    public String showDashboard() {
+        return "books/home";  
+    }
+    @GetMapping("/Thongke")
+    public String showthongke() {
+    	return "books/Thongke";
+    }
+
     @GetMapping("/search")
     public String search(@RequestParam String tenSach, Model model) {
-        List<Sach1> books = sach1service.searchByTenSach(tenSach);  // Gọi service để lấy dữ liệu sách
-        model.addAttribute("books", books);  // Truyền danh sách sách vào model
-        return "books/search";  // Trả về trang searchPage để hiển thị kết quả
+        List<Sach1> books = sach1service.searchByTenSach(tenSach);
+        model.addAttribute("books", books);
+        return "books/search";
     }
-    @GetMapping({"", "/"})
+	/*
+	 * //Filter
+	 * 
+	 * @GetMapping("/filter-by-doituong") public String
+	 * filterByTenDoiTuong(@RequestParam(required = false) String TenDoiTuong, Model
+	 * model) { List<Sach1> sachList; if (TenDoiTuong != null &&
+	 * !TenDoiTuong.isEmpty()) { sachList =
+	 * sach1service.getSachByTenDoiTuong(TenDoiTuong); } else { sachList =
+	 * sach1service.getAllBooks(); } model.addAttribute("books", sachList);
+	 * model.addAttribute("doiTuongList", sach1service.getAllDistinctTenDoiTuong());
+	 * return "books/index3"; }
+	 */
+
+    @GetMapping({"", "/books"})
     public String showsach(Model model, 
                            @RequestParam(defaultValue = "1") int page, 
                            @RequestParam(defaultValue = "10") int size) 
     {
         // Lấy trang sách từ service
-        Page<Sach1> booksPage = sach1service.getBooksByPage(page, size);
+    	Page<Sach1> booksPage = sach1service.getBooksByPage(page, size);
 
-        // Thêm dữ liệu vào model để hiển thị trong view
-        model.addAttribute("books", booksPage.getContent());      
-        model.addAttribute("currentPage", page);                   
-        model.addAttribute("totalPages", booksPage.getTotalPages()); 
+    	// Thêm dữ liệu vào model để hiển thị trong view
+    	model.addAttribute("books", booksPage.getContent());      
+    	model.addAttribute("currentPage", page);                   
+    	model.addAttribute("totalPages", booksPage.getTotalPages()); 
+    	model.addAttribute("size", size); // Thêm kích thước trang vào model
 
-        return "books/index3";  
+    	return "books/index3";  
     }
     @GetMapping("/create")
     public String showCreatePage(Model model) {
@@ -92,53 +117,49 @@ public class Sach1controller {
         
         return "redirect:/books"; 
     }
-	/*
-	 * @GetMapping("/search") public String searchBooks(@RequestParam("keyword")
-	 * String keyword, Model model) { List<Sach1> searchResults =
-	 * sach1service.searchBooksByName(keyword); // Service gọi hàm tìm kiếm
-	 * model.addAttribute("books", searchResults); model.addAttribute("keyword",
-	 * keyword); return "books/search-results"; // Giao diện hiển thị kết quả }
-	 */
 	 
     @GetMapping("/edit")
     public String showEditPage(Model model, @RequestParam String MaSach) {
-    	Optional<Sach1> sach1 = sach1service.findById(MaSach);
-        if (sach1.isPresent()) {
-            Sach1DTO sach1dto = new Sach1DTO();
-            sach1dto.setMaSach(sach1.get().getMaSach());
-            sach1dto.setTenSach(sach1.get().getTenSach());
-            sach1dto.setGiaGoc(sach1.get().getGiaGoc());
-            
-            sach1dto.setGiaKM(sach1.get().getGiaKM());
-            sach1dto.setTenTG(sach1.get().getTenTG());
-            sach1dto.setTenDoiTuong(sach1dto.getTenDoiTuong());
-            sach1dto.setSoTrang(sach1.get().getSoTrang());
-            sach1dto.setSoLuongCon(sach1.get().getSoLuongCon());
-            sach1dto.setLinkAnh(sach1.get().getLinkAnh());
-            sach1dto.setMaDM(sach1.get().getMaDM());
-            model.addAttribute("sach1dto", sach1dto);
-            return "books/edit";
-        }
-        return "redirect:/books";
+        return sach1service.findById(MaSach)
+            .map(sach -> {
+                Sach1DTO sach1dto = convertToDTO(sach);
+                model.addAttribute("sach1dto", sach1dto);
+                return "books/edit";
+            })
+            .orElse("redirect:/books");
     }
+
     @PostMapping("/edit")
     public String editBook(@Valid @ModelAttribute("sach1dto") Sach1DTO sach1dto,
-                           BindingResult result) {
+                           BindingResult result, Model model) {
         if (result.hasErrors()) {
             return "books/edit";
         }
         sach1service.updateBook(sach1dto);
         return "redirect:/books";
     }
+
+    private Sach1DTO convertToDTO(Sach1 sach) {
+        Sach1DTO sach1dto = new Sach1DTO();
+        sach1dto.setMaSach(sach.getMaSach());
+        sach1dto.setTenSach(sach.getTenSach());
+        sach1dto.setGiaGoc(sach.getGiaGoc());
+        sach1dto.setGiaKM(sach.getGiaKM());
+        sach1dto.setTenTG(sach.getTenTG());
+        sach1dto.setTenDoiTuong(sach.getTenDoiTuong());
+        sach1dto.setSoTrang(sach.getSoTrang());
+        sach1dto.setSoLuongCon(sach.getSoLuongCon());
+        sach1dto.setLinkAnh(sach.getLinkAnh());
+        sach1dto.setMaDM(sach.getMaDM());
+        return sach1dto;
+    }
+
     
     @GetMapping("/delete")
     public String deleteBook(@RequestParam String MaSach) {
     	sach1service.deleteBook(MaSach);
     	return "redirect:/books";
     }
-    
-
-    
     @GetMapping("/high-stock")
     public String showBooks(
             @RequestParam(value = "page", defaultValue = "1") int page,
@@ -187,7 +208,9 @@ public class Sach1controller {
         model.addAttribute("totalPages", booksPage.getTotalPages());
     	return "books/flash-sales"; 
     }
- }
+    
+	
+   }
 
 
 
