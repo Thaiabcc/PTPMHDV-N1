@@ -15,7 +15,6 @@ package com.example.demo.service;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +23,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.Response.SachResponse;
 import com.example.demo.model.Sach;
 import com.example.demo.model.Sach1DTO;
 import com.example.demo.repository.SachRepository;
+import com.example.demo.response.SachResponse;
 
 @Service
 public class SachService {
@@ -37,6 +36,12 @@ public class SachService {
 
 	public List<Sach> searchByTenSach(String tenSach) {
 		return sachRepository.findByTenSachContainingIgnoreCase(tenSach);
+	}
+
+	// Lấy danh sách sách
+	public List<Sach> findBookByMaDM(String maDM) {
+		List<Sach> book = sachRepository.findByMaDM(maDM);
+		return book;
 	}
 
 	// Create and save
@@ -60,12 +65,6 @@ public class SachService {
 		Pageable pageable = PageRequest.of(page, size);
 		return sachRepository.findAll(pageable);
 	}
-
-	/*
-	 * public List<Sach1> searchBooksByName(String keyword) { return
-	 * sach1repository.findByTenSachContainingIgnoreCase(keyword); // Repository
-	 * thực hiện tìm kiếm }
-	 */
 
 	// Update sach
 	public Optional<Sach> findById(String MaSach) {
@@ -131,26 +130,28 @@ public class SachService {
 		return sachRepository.findBySoLuongConGreaterThan(700, PageRequest.of(page, size));
 	}
 
-	// Thống kê lợi nhuận của 1 sách
+	// Thống kê doanh thu của 1 sách
 	public SachResponse profitOfBook(String maSach) {
-		Random rand = new Random();
-		int PTCP = rand.nextInt(21) + 20;
-		Optional<Sach> book = sachRepository.findById(maSach);
+		int PTCP = 60;
+		Optional<Sach> book = Optional.ofNullable(sachRepository.findByMaSach(maSach));
 		String strGiaGoc1 = book.get().getGiaGoc().substring(0, book.get().getGiaGoc().length() - 1);
 		String strGiaGoc2 = strGiaGoc1.replace(",", "");
 		float giaGoc = Float.parseFloat(strGiaGoc2);
 		String strGiaKM1 = book.get().getGiaKM().substring(0, book.get().getGiaKM().length() - 1);
 		String strGiaKM2 = strGiaKM1.replace(",", "");
 		double giaKM = Float.parseFloat(strGiaKM2);
-		double von = ((giaGoc / 100) * PTCP) * (1000 - book.get().getSoLuongCon());
-		double doanhThu = giaKM * (1000 - book.get().getSoLuongCon());
+		double von = ((giaKM / 100) * PTCP) * 1000;
+		double doanhThu = giaKM * book.get().getSoLuongBan();
 		double loiNhuan = doanhThu - von;
-		double phanTramLN = (loiNhuan / doanhThu) * 100;
+		double phanTramLNTmp = (loiNhuan / doanhThu) * 100;
+		double phanTramLN = Math.round(phanTramLNTmp * 100.0) / 100.0;
 		SachResponse bookRP = new SachResponse(book.get().getMaSach(), book.get().getTenSach(), book.get().getLinkAnh(),
 				book.get().getGiaGoc(), book.get().getGiaKM(), book.get().getTenTG(), book.get().getTenDoiTuong(),
 				book.get().getSoTrang(), book.get().getSoLuongCon(), book.get().getMaDM(), doanhThu, loiNhuan,
 				phanTramLN);
 		return bookRP;
 	}
-	
+
+	// Thống kê doanh thu các sách trong 1 danh mục
+
 }

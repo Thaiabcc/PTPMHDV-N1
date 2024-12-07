@@ -10,15 +10,13 @@ import com.example.demo.model.Sach;
 
 public interface SachRepository extends JpaRepository<Sach, String> {
 
-	List<Sach> findByTenSachContainingIgnoreCase(String tenSach);
+	List<Sach> findByMaDM(String MaDM);
+	
+	Sach findByMaSach(String MaSach); 
+	
+	List<Sach> findByTenSachContainingIgnoreCase(String TenSach);
 
 	Page<Sach> findBySoLuongConGreaterThan(int quantity, Pageable pageable);
 
 	Page<Sach> findBySoLuongConLessThan(int quantity, Pageable pageable);
-
-	static List<Sach> findByTenDoiTuong(String tenDoiTuong) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	}
+}

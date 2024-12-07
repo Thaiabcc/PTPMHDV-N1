@@ -27,7 +27,7 @@ public class Sach1DTO {
 	@Pattern(regexp = "\\d+", message = "Nhập số nguyên")
 	private String SoTrang;
 
-	@Positive(message = "Số lượng còn phải lớn hơn 0")
+	@Pattern(regexp = "\\d+", message = "Nhập số nguyên")
 	private int SoLuongCon;
 
 	@NotEmpty(message = "Nhập Link Ảnh")

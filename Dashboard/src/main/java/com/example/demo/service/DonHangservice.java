@@ -7,12 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.model.DonHang;
-import com.example.demo.repository.DonHangrepository;
+import com.example.demo.repository.DonHangRepository;
 
 @Service
 public class DonHangservice {
 	@Autowired
-	private DonHangrepository re;
+	private DonHangRepository re;
 
 	// Tạo đơn mới
 	public DonHang createDonHang(DonHang donHang) {

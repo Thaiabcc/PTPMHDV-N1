@@ -1,109 +1,199 @@
+/*
+ * package com.example.demo;
+ * 
+ * import org.springframework.beans.factory.annotation.Autowired; import
+ * org.springframework.stereotype.Controller; import
+ * org.springframework.ui.Model; import
+ * org.springframework.web.bind.annotation.GetMapping; import
+ * org.springframework.web.bind.annotation.RequestMapping; import java.util.*;
+ * 
+ * @Controller
+ * 
+ * @RequestMapping public class Sach1controller {
+ * 
+ * @Autowired private Sach1repository repo;
+ * 
+ * @GetMapping({"", "/"})
+ * 
+ * public String showsach(Model model){ List<Sach1> books = repo.findAll();
+ * model.addAttribute("books", books); return "index1"; } }
+ */
+
 package com.example.demo.controller;
 
 import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import com.example.demo.Response.PagedResponse;
-import com.example.demo.Response.SachResponse;
 import com.example.demo.model.Sach;
 import com.example.demo.model.Sach1DTO;
-import com.example.demo.repository.SachRepository;
 import com.example.demo.service.SachService;
 
-@RestController
-@RequestMapping(path = "/api", produces = "application/json")
+import jakarta.validation.Valid;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.BindingResult;
+
+@Controller
+@RequestMapping("/books")
 public class SachController {
-	
-	private final SachService sachService;
 
 	@Autowired
-	public SachController(SachService sachservice) {
-		this.sachService = sachservice;
-	}
-    //OK
-	@GetMapping("/bestsellers")
-	public ResponseEntity<PagedResponse<Sach>> getBestsellers(@RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "20") int size) {
-		Page<Sach> sach = sachService.getSachBanChays(page, size);
-		return ResponseEntity.ok(new PagedResponse<>(sach));
-	}
-	
-    //OK
-	@GetMapping("/high-stock")
-	public ResponseEntity<PagedResponse<Sach>> getHighStocks(@RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "20") int size) {
-		Page<Sach> sach = sachService.getSachTonKhos(page, size);
-		return ResponseEntity.ok(new PagedResponse<>(sach));
+	private SachService sach1service;
+
+	@GetMapping("/home")
+	public String showDashboard() {
+		return "books/home";
 	}
 
-	//OK
-	  @GetMapping("/profit/{maSach}") public SachResponse
-	  thongKeLoiNhuanSach(@PathVariable(name = "maSach") String maSach) { return
-	  sachService.profitOfBook(maSach); }
-	 
-
-	// Thêm sách OK
-	@PostMapping("/books")
-	public ResponseEntity<Sach> createBook(@RequestBody Sach1DTO sach1dto) {
-		Sach sach = sachService.saveBook(sach1dto);
-		return ResponseEntity.ok(sach);
-	}
-
-	// Sửa sách OK
-	@PutMapping("/books/{maSach}")
-	public ResponseEntity<?> updateBook(@PathVariable(name = "maSach") String maSach, 
-	                                    @RequestBody Sach1DTO sach1dto) {
-	    if (maSach == null || maSach.isEmpty()) {
-	        return ResponseEntity.badRequest().body("MaSach cannot be null or empty");
-	    }
-
-	    if (!maSach.equals(sach1dto.getMaSach())) {
-	        return ResponseEntity.badRequest().body("Path variable MaSach must match the MaSach in the request body");
-	    }
-
-	    try {
-	        sachService.updateBook(sach1dto); // Không cần giá trị trả về
-	        return ResponseEntity.ok("Book updated successfully.");
-	    } catch (NoSuchElementException e) {
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Book not found with MaSach: " + maSach);
-	    } catch (Exception e) {
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating book: " + e.getMessage());
-	    }
-	}
-
-
-	// Xóa sách OK
-	@DeleteMapping("/books/{maSach}")
-	public ResponseEntity<Void> deleteBook(@PathVariable(name = "maSach") String maSach) {
-		sachService.deleteBook(maSach);
-		return ResponseEntity.noContent().build();
-	}
-
-	// Tìm kiếm sách theo tên OK
 	@GetMapping("/search")
-	public ResponseEntity<List<Sach>> searchBooks(@RequestParam String tenSach) {
-		List<Sach> books = sachService.searchByTenSach(tenSach);
-		return ResponseEntity.ok(books);
+	public String search(@RequestParam String tenSach, Model model) {
+		List<Sach> books = sach1service.searchByTenSach(tenSach);
+		model.addAttribute("books", books);
+		return "books/search";
 	}
-	// API trả về dữ liệu lọc theo thể loại (TenDoiTuong) và số lượng còn
-    @GetMapping("/api/sach/biểuđồ")
-    public ResponseEntity<Map<String, Integer>> getSachForChart(@RequestParam String tenDoiTuong) {
-        // Lọc sách theo thể loại (TenDoiTuong)
-        List<Sach> sachList = SachRepository.findByTenDoiTuong(tenDoiTuong);
 
-        // Lọc dữ liệu theo tên sách và số lượng còn
-        Map<String, Integer> result = sachList.stream()
-                .collect(Collectors.toMap(Sach::getTenSach, Sach::getSoLuongCon));
+	@GetMapping({ "", "/books" })
+	public String showsach(Model model, @RequestParam(defaultValue = "1") int page,
+			@RequestParam(defaultValue = "10") int size) {
+		// Lấy trang sách từ service
+		Page<Sach> booksPage = sach1service.getBooksByPage(page, size);
 
-        return ResponseEntity.ok(result);
-    }
+		// Thêm dữ liệu vào model để hiển thị trong view
+		model.addAttribute("books", booksPage.getContent());
+		model.addAttribute("currentPage", page);
+		model.addAttribute("totalPages", booksPage.getTotalPages());
+		model.addAttribute("size", size); // Thêm kích thước trang vào model
+
+		return "books/index3";
+	}
+
+	@GetMapping("/create")
+	public String showCreatePage(Model model) {
+		model.addAttribute("sach1dto", new Sach1DTO());
+		return "books/createbook";
+	}
+
+	// Them Sach
+	@PostMapping("/create")
+	public String createBook(@Valid @ModelAttribute("sach1dto") Sach1DTO sach1dto, BindingResult result) {
+
+		if (result.hasErrors()) {
+			return "books/createbook";
+		}
+		sach1service.saveBook(sach1dto);
+
+		return "redirect:/books";
+	}
+	/*
+	 * @GetMapping("/search") public String searchBooks(@RequestParam("keyword")
+	 * String keyword, Model model) { List<Sach1> searchResults =
+	 * sach1service.searchBooksByName(keyword); // Service gọi hàm tìm kiếm
+	 * model.addAttribute("books", searchResults); model.addAttribute("keyword",
+	 * keyword); return "books/search-results"; // Giao diện hiển thị kết quả }
+	 */
+
+	@GetMapping("/edit")
+	public String showEditPage(Model model, @RequestParam String MaSach) {
+		return sach1service.findById(MaSach).map(sach -> {
+			Sach1DTO sach1dto = convertToDTO(sach);
+			model.addAttribute("sach1dto", sach1dto);
+			return "books/edit";
+		}).orElse("redirect:/books");
+	}
+
+	private Sach1DTO convertToDTO(Sach sach) {
+		Sach1DTO sach1dto = new Sach1DTO();
+		sach1dto.setMaSach(sach.getMaSach());
+		sach1dto.setTenSach(sach.getTenSach());
+		sach1dto.setGiaGoc(sach.getGiaGoc());
+		sach1dto.setGiaKM(sach.getGiaKM());
+		sach1dto.setTenTG(sach.getTenTG());
+		sach1dto.setTenDoiTuong(sach.getTenDoiTuong());
+		sach1dto.setSoTrang(sach.getSoTrang());
+		sach1dto.setSoLuongCon(sach.getSoLuongCon());
+		sach1dto.setLinkAnh(sach.getLinkAnh());
+		sach1dto.setMaDM(sach.getMaDM());
+		return sach1dto;
+	}
+
+	@PostMapping("/edit")
+	public String editBook(@Valid @ModelAttribute("sach1dto") Sach1DTO sach1dto, BindingResult result, Model model) {
+		if (result.hasErrors()) {
+			return "books/edit";
+		}
+		sach1service.updateBook(sach1dto);
+		return "redirect:/books";
+	}
+
+	@GetMapping("/delete")
+	public String deleteBook(@RequestParam String MaSach) {
+		sach1service.deleteBook(MaSach);
+		return "redirect:/books";
+	}
+
+	@GetMapping("/books/home")
+	public String showTopSellingBooks(@RequestParam(defaultValue = "10") int limit, Model model) {
+		List<Sach> topSellingBooks = sach1service.getTopSellingBooks(limit);
+		model.addAttribute("topSellingBooks", topSellingBooks);
+		System.out.println("Top selling books in model: " + topSellingBooks); // In ra model
+		return "books/home"; // Tên tệp HTML
+	}
+
+	@GetMapping("high-stock")
+	public String showBookTonKho(@RequestParam(value = "page", defaultValue = "1") int page,
+			@RequestParam(value = "size", defaultValue = "30") int size, Model model) {
+		// Lấy danh sách sách tồn kho > 700 với phân trang
+		Page<Sach> booksPage = sach1service.getBooksWithSoLuongConGreaterThan700(page, 30);
+
+		// Thêm dữ liệu vào model để hiển thị trong view
+		model.addAttribute("books", booksPage.getContent()); // Danh sách sách trong trang hiện tại
+		model.addAttribute("currentPage", page); // Trang hiện tại
+		model.addAttribute("totalPages", booksPage.getTotalPages()); // Tổng số trang
+
+		return "books/high-stock";
+	}
+
+	@GetMapping("thongke")
+	public String showThongKe() {
+		return "books/thongke";
+	}
+
+	@GetMapping("best-seller")
+	public String showBookBest(@RequestParam(value = "page", defaultValue = "1") int page,
+			@RequestParam(value = "size", defaultValue = "25") int size, Model model) {
+		// Lấy danh sách sách tồn kho < 300 với phân trang
+		Page<Sach> booksPage = sach1service.getBooksWithSoLuongConLessThan300(page, 25);
+
+		// Thêm dữ liệu vào model để hiển thị trong view
+		model.addAttribute("books", booksPage.getContent()); // Danh sách sách trong trang hiện tại
+		model.addAttribute("currentPage", page); // Trang hiện tại
+		model.addAttribute("totalPages", booksPage.getTotalPages()); // Tổng số trang
+
+		return "books/best-seller";
+	}
+
+	@GetMapping("/flash-sales")
+	public String showBookFlashSales(@RequestParam(value = "page", defaultValue = "1") int page,
+			@RequestParam(value = "size", defaultValue = "25") int size, Model model) {
+		Page<Sach> booksPage = sach1service.getBooksWithSoLuongConGreaterThan700(page, 25);
+
+		// Thêm dữ liệu vào model để hiển thị trong view
+		model.addAttribute("books", booksPage.getContent()); // Danh sách sách trong trang hiện tại
+		model.addAttribute("currentPage", page); // Trang hiện tại
+		model.addAttribute("totalPages", booksPage.getTotalPages());
+		return "books/flash-sales";
+	}
 	
+	@GetMapping("/profit/{maSach}")
+	public String showProfitOfBook() {
+		return "books/LoiNhuanBook";
+	}
 }

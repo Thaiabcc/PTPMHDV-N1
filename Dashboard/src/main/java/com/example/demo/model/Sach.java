@@ -2,16 +2,20 @@ package com.example.demo.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-@Entity(name="SachEntity")
-@Table(name ="newsach")
+@Entity
+@Table(name = "SACH")
 public class Sach {
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;	
 	@Column(name = "MaSach", columnDefinition = "varchar(25)")
-	private String MaSach;
+	private String maSach;
 	@Column(name = "TenSach", columnDefinition = "nvarchar(200)")
 	private String tenSach;
 	@Column(name = "LinkAnh", columnDefinition = "varchar(MAX)")
@@ -28,15 +32,15 @@ public class Sach {
 	private String SoTrang;
 	@Column(name = "SoLuongCon")
 	private int soLuongCon;
-	@Column(name = "MaDM", columnDefinition = "varchar(25)")
-	private String MaDM;
-
+	@Column(name = "MaDM", columnDefinition = "varchar(25)", nullable = false)
+	private String maDM;
+	
 	public Sach() {
 	}
 
 	public Sach(String maSach, String tenSach, String linkAnh, String giaGoc, String giaKM, String tenTG,
 			String tenDoiTuong, String soTrang, int soLuongCon, String maDM) {
-		MaSach = maSach;
+		this.maSach = maSach;
 		this.tenSach = tenSach;
 		LinkAnh = linkAnh;
 		GiaGoc = giaGoc;
@@ -45,15 +49,15 @@ public class Sach {
 		TenDoiTuong = tenDoiTuong;
 		SoTrang = soTrang;
 		this.soLuongCon = soLuongCon;
-		MaDM = maDM;
+		this.maDM = maDM;
 	}
 
 	public String getMaSach() {
-		return MaSach;
+		return maSach;
 	}
 
 	public void setMaSach(String maSach) {
-		MaSach = maSach;
+		this.maSach = maSach;
 	}
 
 	public String getTenSach() {
@@ -121,11 +125,11 @@ public class Sach {
 	}
 
 	public String getMaDM() {
-		return MaDM;
+		return maDM;
 	}
 
 	public void setMaDM(String maDM) {
-		MaDM = maDM;
+		this.maDM = maDM;
 	}
 
 	public int getSoLuongBan() {
